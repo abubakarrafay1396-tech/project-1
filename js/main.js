@@ -89,3 +89,20 @@ if (track && dotsWrap) {
     });
   });
 }
+document.querySelectorAll('.faq-item').forEach(item => {
+  const button = item.querySelector('.faq-question');
+  const answer = item.querySelector('.faq-answer');
+  button.addEventListener('click', () => {
+    const isOpen = item.dataset.open === 'true';
+    document.querySelectorAll('.faq-item').forEach(other => {
+      other.dataset.open = 'false';
+      other.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+      other.querySelector('.faq-answer').style.maxHeight = null;
+    });
+    if (!isOpen) {
+      item.dataset.open = 'true';
+      button.setAttribute('aria-expanded', 'true');
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+    }
+  });
+});
