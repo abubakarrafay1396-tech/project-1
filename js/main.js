@@ -57,3 +57,35 @@ document.querySelectorAll('.video-thumb img').forEach(image => {
     if (image.naturalWidth < 300 || image.naturalHeight < 180) useFallback();
   });
 });
+
+const track = document.getElementById('testimonialTrack');
+const dotsWrap = document.getElementById('carouselDots');
+if (track && dotsWrap) {
+  const cards = [...track.querySelectorAll('.review-card')];
+  cards.forEach((card, i) => {
+    const dot = document.createElement('button');
+    dot.setAttribute('aria-label', `Go to testimonial ${i + 1}`);
+    dot.addEventListener('click', () => card.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' }));
+    dotsWrap.appendChild(dot);
+  });
+  const dots = [...dotsWrap.querySelectorAll('button')];
+
+  const updateDots = () => {
+    let closest = 0, min = Infinity;
+    cards.forEach((card, i) => {
+      const diff = Math.abs(card.offsetLeft - track.scrollLeft);
+      if (diff < min) { min = diff; closest = i; }
+    });
+    dots.forEach((dot, i) => dot.classList.toggle('is-active', i === closest));
+  };
+  track.addEventListener('scroll', () => requestAnimationFrame(updateDots));
+  updateDots();
+
+  document.querySelectorAll('.carousel-arrow').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const dir = parseInt(btn.dataset.dir, 10);
+      const step = cards[0].getBoundingClientRect().width + 24;
+      track.scrollBy({ left: dir * step, behavior: 'smooth' });
+    });
+  });
+}
